@@ -1,0 +1,43 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="titulo">
+    #{msgs.tituloOperacionListado}
+  </ui:define>
+
+	<ui:define name="cuerpo">
+		<p:panel header="#{msgs.tituloOperacionListado}">
+			<p:dataTable id="tablatareas" var="tarea"
+				value="#{controller.}" border="1">
+				<p:column>
+					<f:facet name="header">#{msgs.tabla}</f:facet>#{tarea.nombre}</p:column>
+				<p:column>
+					<f:facet name="header">#{msgs.tablaApellidos}</f:facet>#{tarea.apellidos}</p:column>
+				<p:column>
+					<f:facet name="header">#{msgs.tablaIdUser}</f:facet>#{tarea.iduser}</p:column>
+				<p:column>
+					<f:facet name="header">#{msgs.tablaCorreo}</f:facet>#{tarea.email}</p:column>
+				<p:column>
+					<f:facet name="header">#{msgs.tablaBaja}</f:facet>
+					<p:commandLink action="#{controller.baja(tarea)}" type="submit"
+						value="#{msgs.tablaBaja}" immediate="true" update="tablaTareas">
+					</p:commandLink>
+
+				</p:column>
+				<p:column>
+					<f:facet name="header">#{msgs.tablaEditar}</f:facet>
+					<p:commandLink action="editar" type="submit"
+						value="#{msgs.tablaEditar}"
+						actionListener="#{alumno.setAlumno(tarea)}" immediate="true">
+					</p:commandLink>
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+	</ui:define>
+	<ui:define name="pie">
+		<ui:include src="/snippets/pie-casa.xhtml" />
+	</ui:define>
+</ui:composition>

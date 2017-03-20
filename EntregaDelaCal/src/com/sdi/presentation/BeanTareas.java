@@ -9,13 +9,15 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 import com.sdi.business.AlumnosService;
+import com.sdi.business.TaskService;
 import com.sdi.infrastructure.Factories;
-import com.sdi.model.Alumno;
+import com.sdi.model.Task;
 import com.sdi.model.User;
+
 
 @ManagedBean(name = "controller")
 @SessionScoped
-public class BeanAlumnos implements Serializable {
+public class BeanTareas implements Serializable {
 	private static final long serialVersionUID = 55555L;
 	// Se añade este atributo de entidad para recibir el alumno concreto
 	// selecionado de la tabla o de un formulario
@@ -24,18 +26,18 @@ public class BeanAlumnos implements Serializable {
 	// dejar los avalores en un objeto existente.
 	// uso de inyección de dependencia
 	@ManagedProperty(value = "#{alumno}")
-	private BeanAlumno alumno;
+	private BeanTarea tarea;
 	
-	public BeanAlumnos() {
-		listado();
+	public BeanTareas() {
+		listadoTasks();
 	}
 
-	public BeanAlumno getAlumno() {
-		return alumno;
+	public BeanTarea getTarea() {
+		return tarea;
 	}
 
-	public void setAlumno(BeanAlumno alumno) {
-		this.alumno = alumno;
+	public void setTarea(BeanTarea tarea) {
+		this.tarea = tarea;
 	}
 
 	// Se inicia correctamente el MBean inyectado si JSF lo hubiera crea
@@ -46,56 +48,64 @@ public class BeanAlumnos implements Serializable {
 	// ya estaba construido y en @PostConstruct SI.
 	@PostConstruct
 	public void init() {
-		System.out.println("BeanAlumnos - PostConstruct");
+		System.out.println("BeanTareas - PostConstruct");
 		// Buscamos el alumno en la sesión. Esto es un patrón factoría
 		// claramente.
-		alumno = (BeanAlumno) FacesContext.getCurrentInstance()
-				.getExternalContext().getSessionMap().get(new String("alumno"));
+		tarea = (BeanTarea) FacesContext.getCurrentInstance()
+				.getExternalContext().getSessionMap().get(new String("tarea"));
 		// si no existe lo creamos e inicializamos
-		if (alumno == null) {
-			System.out.println("BeanAlumnos - No existia");
-			alumno = new BeanAlumno();
+		if (tarea == null) {
+			System.out.println("BeanTareas - No existia");
+			tarea = new BeanTarea();
 			FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap().put("alumno", alumno);
+					.getSessionMap().put("tarea", tarea);
 		}
 	}
 
 	@PreDestroy
 	public void end() {
-		System.out.println("BeanAlumnos - PreDestroy");
+		System.out.println("BeanTareas - PreDestroy");
 	}
 
-	private Alumno[] alumnos = null;
+	private Task[] tareas = null;
 
-	public Alumno[] getAlumnos() {
-		return (alumnos);
+	public Task[] getTareas() {
+		return (tareas);
+		
 	}
 
-	public void setAlumnos(Alumno[] alumnos) {
-		this.alumnos = alumnos;
+	public void setTareas(Task[] tareas) {
+		this.tareas = tareas;
 	}
 
 	public void iniciaAlumno(ActionEvent event) {
-		alumno.setId(null);
-		alumno.setIduser("IdUser");
-		alumno.setNombre("Nombre");
-		alumno.setApellidos("Apellidos");
-		alumno.setEmail("email@domain.com");
+		tarea.setId(null);
+		tarea.setCategoryId(null);
+		tarea.setTitle("Nombre");
+		tarea.setComments("Commentarios");
+		tarea.setCreated(null);
+		tarea.setFinished(null);
+		tarea.setPlanned(null);
 	}
 
-	public String listado() {
+	public String listadoTasks() {
 		if (userIsNotLoggedIn()) {
 			return "casa";
 		}
 
-		AlumnosService service;
+		TaskService service;
 		try {
 			// Acceso a la implementacion de la capa de negocio
 			// a trav��s de la factor��a
-			service = Factories.services.createAlumnosService();
+			service = Factories.services.createTaskService();
 			// De esta forma le damos informaci��n a toArray para poder hacer el
 			// casting a Alumno[]
-			alumnos = (Alumno[]) service.getAlumnos().toArray(new Alumno[0]);
+			
+			//-------------------------------------------------------------------
+			
+			//tareas = (Task[]) service..toArray(new Task[0]);
+			
+			//-------------------------------------------------------------------
 
 			return "exito"; // Nos vamos a la vista listado.xhtml
 
@@ -106,19 +116,23 @@ public class BeanAlumnos implements Serializable {
 
 	}
 
-	public String baja(Alumno alumno) {
+	public String borrar(Task tarea) {
 		if (userIsNotLoggedIn()) {
 			return "casa";
 		}
-		AlumnosService service;
+		TaskService service;
 		try {
 			// Acceso a la implementacion de la capa de negocio
 			// a trav��s de la factor��a
-			service = Factories.services.createAlumnosService();
+			service = Factories.services.createTaskService();
 			// Aliminamos el alumno seleccionado en la tabla
-			service.deleteAlumno(alumno.getId());
+			service.deleteTask(tarea.getId());
 			// Actualizamos el javabean de alumnos inyectado en la tabla.
-			alumnos = (Alumno[]) service.getAlumnos().toArray(new Alumno[0]);
+			
+			//-------------------------------------------------------------------
+			// tareas = (Task[]) service.getAlumnos().toArray(new Task[0]);
+			//-------------------------------------------------------------------
+			
 			return "exito"; // Nos vamos a la vista de listado.
 
 		} catch (Exception e) {
@@ -128,19 +142,19 @@ public class BeanAlumnos implements Serializable {
 
 	}
 
-	public String edit() {
+	public String editTask() {
 		if (userIsNotLoggedIn()) {
 			return "casa";
 		}
 		
-		AlumnosService service;
+		TaskService service;
 		try {
 			// Acceso a la implementacion de la capa de negocio
 			// a trav��s de la factor��a
-			service = Factories.services.createAlumnosService();
+			service = Factories.services.createTaskService();
 			// Recargamos el alumno seleccionado en la tabla de la base de datos
 			// por si hubiera cambios.
-			alumno = (BeanAlumno) service.findById(alumno.getId());
+			tarea = (BeanTarea) service.findTaskById(tarea.getId());
 			return "exito"; // Nos vamos a la vista de Edición.
 
 		} catch (Exception e) {
@@ -150,25 +164,27 @@ public class BeanAlumnos implements Serializable {
 
 	}
 
-	public String salva() {
+	public String salvaTask() {
 		if (userIsNotLoggedIn()) {
 			return "casa";
 		}
 		
-		AlumnosService service;
+		TaskService service;
 		try {
 			// Acceso a la implementacion de la capa de negocio
 			// a trav��s de la factor��a
-			service = Factories.services.createAlumnosService();
+			service = Factories.services.createTaskService();
 			// Salvamos o actualizamos el alumno segun sea una operacion de alta
 			// o de edici��n
-			if (alumno.getId() == null) {
-				service.saveAlumno(alumno);
+			if (tarea.getId() == null) {
+				//service.saveAlumno(alumno);
 			} else {
-				service.updateAlumno(alumno);
+				service.updateTask(tarea);
 			}
 			// Actualizamos el javabean de alumnos inyectado en la tabla
-			alumnos = (Alumno[]) service.getAlumnos().toArray(new Alumno[0]);
+			//-------------------------------------------------------------------
+			// tareas = (Task[]) service.getAlumnos().toArray(new Task[0]);
+			//-------------------------------------------------------------------
 			return "exito"; // Nos vamos a la vista de listado.
 
 		} catch (Exception e) {
