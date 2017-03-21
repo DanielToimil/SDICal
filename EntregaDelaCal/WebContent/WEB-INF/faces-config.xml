@@ -45,6 +45,11 @@
 			<from-outcome>exito</from-outcome>
 			<to-view-id>/restricted/listado.xhtml</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-action>#{tareas.listadoTasks}</from-action>
+			<from-outcome>exito</from-outcome>
+			<to-view-id>/listarTareas.xhtml</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>/restricted/listado.xhtml</from-view-id>
@@ -82,4 +87,5 @@
 			<to-view-id>/restricted/listado.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
+	
 </faces-config>
