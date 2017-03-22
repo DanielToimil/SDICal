@@ -28,6 +28,8 @@ public class BeanTareas implements Serializable {
 	@ManagedProperty(value = "#{alumno}")
 	private BeanTarea tarea;
 	
+	User user = (User) getObjectFromSession("LOGGEDIN_USER");
+	
 	public BeanTareas() {
 		listadoTasks();
 	}
@@ -103,7 +105,7 @@ public class BeanTareas implements Serializable {
 			
 			//-------------------------------------------------------------------
 			
-			//tareas = (Task[]) service..toArray(new Task[0]);
+			tareas = (Task[]) service.findFinishedInboxTasksByUserId(user.getId()).toArray(new Task[0]);
 			
 			//-------------------------------------------------------------------
 
@@ -130,7 +132,7 @@ public class BeanTareas implements Serializable {
 			// Actualizamos el javabean de alumnos inyectado en la tabla.
 			
 			//-------------------------------------------------------------------
-			// tareas = (Task[]) service.getAlumnos().toArray(new Task[0]);
+			tareas = (Task[]) service.findInboxTasksByUserId(user.getId()).toArray(new Task[0]);
 			//-------------------------------------------------------------------
 			
 			return "exito"; // Nos vamos a la vista de listado.
@@ -206,5 +208,10 @@ public class BeanTareas implements Serializable {
 	private Object getObjectFromSession(String key) {
 		return FacesContext.getCurrentInstance().getExternalContext()
 				.getSessionMap().get(key);
+	}
+	
+	private Task[] listarTareas(){
+		TaskService service = Factories.services.createTaskService();
+		return tareas = (Task[]) service.findInboxTasksByUserId(user.getId()).toArray(new Task[0]);
 	}
 }

@@ -2,6 +2,17 @@ package com.sdi.business.impl;
 
 import java.util.List;
 
+import com.sdi.business.impl.command.Command;
+import com.sdi.business.impl.command.CommandExecutor;
+import com.sdi.business.impl.clasesTask.CreateCategoryCommand;
+import com.sdi.business.impl.clasesTask.CreateTaskCommand;
+import com.sdi.business.impl.clasesTask.DeleteCategoryCommand;
+import com.sdi.business.impl.clasesTask.DuplicateCategoryCommand;
+import com.sdi.business.impl.clasesTask.MarkTaskAsFinishedCommand;
+import com.sdi.business.impl.clasesTask.UpdateCategoryCommand;
+import com.sdi.business.impl.clasesTask.UpdateTaskCommand;
+import com.sdi.persistence.Persistence;
+
 import com.sdi.business.TaskService;
 import com.sdi.business.exception.BusinessException;
 import com.sdi.model.Category;
@@ -11,108 +22,157 @@ public class SimpleTaskService implements TaskService {
 
 	@Override
 	public Long createCategory(Category category) throws BusinessException {
-		// TODO Auto-generated method stub
-		return null;
+		return new CommandExecutor<Long>().execute( 
+			new CreateCategoryCommand( category )
+		);
 	}
 
 	@Override
 	public Long duplicateCategory(Long id) throws BusinessException {
-		// TODO Auto-generated method stub
-		return null;
+		return new CommandExecutor<Long>().execute( 
+				new DuplicateCategoryCommand( id )
+			);
 	}
 
 	@Override
 	public void updateCategory(Category category) throws BusinessException {
-		// TODO Auto-generated method stub
-		
+		new CommandExecutor<Void>().execute( 
+				new UpdateCategoryCommand( category )
+			);
 	}
 
 	@Override
-	public void deleteCategory(Long id) throws BusinessException {
-		// TODO Auto-generated method stub
-		
+	public void deleteCategory(Long catId) throws BusinessException {
+		new CommandExecutor<Void>().execute( 
+				new DeleteCategoryCommand( catId )
+			);
 	}
 
 	@Override
-	public Category findCategoryById(Long id) throws BusinessException {
-		// TODO Auto-generated method stub
-		return null;
+	public Category findCategoryById(final Long id) throws BusinessException {
+		return new CommandExecutor<Category>().execute( new Command<Category>() {
+			@Override public Category execute() throws BusinessException {
+				
+				return Persistence.getCategoryDao().findById(id);
+			}
+		});
 	}
 
 	@Override
-	public List<Category> findCategoriesByUserId(Long id)
-			throws BusinessException {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Category> findCategoriesByUserId(final Long id) throws BusinessException {
+		return new CommandExecutor<List<Category>>().execute( new Command<List<Category>>() {
+			@Override public List<Category> execute() throws BusinessException {
+				
+				return Persistence.getCategoryDao().findByUserId(id);
+			}
+		});
 	}
 
 	@Override
 	public Long createTask(Task task) throws BusinessException {
-		// TODO Auto-generated method stub
-		return null;
+		return new CommandExecutor<Long>().execute( 
+				new CreateTaskCommand( task )
+			);
 	}
 
 	@Override
-	public void deleteTask(Long id) throws BusinessException {
-		// TODO Auto-generated method stub
-		
+	public void deleteTask(final Long id) throws BusinessException {
+		new CommandExecutor<Void>().execute( new Command<Void>() {
+			@Override
+			public Void execute() throws BusinessException {
+				Persistence.getTaskDao().delete(id);
+				return null;
+			}
+		}); 
 	}
 
 	@Override
 	public void markTaskAsFinished(Long id) throws BusinessException {
-		// TODO Auto-generated method stub
-		
+		new CommandExecutor<Void>().execute( 
+				new MarkTaskAsFinishedCommand( id )
+			);
 	}
 
 	@Override
 	public void updateTask(Task task) throws BusinessException {
-		// TODO Auto-generated method stub
-		
+		new CommandExecutor<Void>().execute( 
+				new UpdateTaskCommand( task )
+			);
 	}
 
 	@Override
-	public Task findTaskById(Long id) throws BusinessException {
-		// TODO Auto-generated method stub
-		return null;
+	public Task findTaskById(final Long id) throws BusinessException {
+		return new CommandExecutor<Task>().execute( new Command<Task>() {
+			@Override public Task execute() throws BusinessException {
+				
+				return Persistence.getTaskDao().findById(id);
+			}
+		});
 	}
 
 	@Override
-	public List<Task> findInboxTasksByUserId(Long id) throws BusinessException {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Task> findInboxTasksByUserId(final Long id) throws BusinessException {
+		return new CommandExecutor<List<Task>>().execute( new Command<List<Task>>() {
+			@Override public List<Task> execute() throws BusinessException {
+				
+				return Persistence.getTaskDao().findInboxTasksByUserId(id);
+			}
+		});
 	}
 
 	@Override
-	public List<Task> findWeekTasksByUserId(Long id) throws BusinessException {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Task> findWeekTasksByUserId(final Long id) throws BusinessException {
+		return new CommandExecutor<List<Task>>().execute( new Command<List<Task>>() {
+			@Override public List<Task> execute() throws BusinessException {
+				
+				return Persistence.getTaskDao().findWeekTasksByUserId(id);
+			}
+		});
 	}
 
 	@Override
-	public List<Task> findTodayTasksByUserId(Long id) throws BusinessException {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Task> findTodayTasksByUserId(final Long id) throws BusinessException {
+		return new CommandExecutor<List<Task>>().execute( new Command<List<Task>>() {
+			@Override public List<Task> execute() throws BusinessException {
+				
+				return Persistence.getTaskDao().findTodayTasksByUserId(id);
+			}
+		});
 	}
 
 	@Override
-	public List<Task> findTasksByCategoryId(Long catId)
-			throws BusinessException {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Task> findTasksByCategoryId(final Long id) throws BusinessException {
+		return new CommandExecutor<List<Task>>().execute( new Command<List<Task>>() {
+			@Override public List<Task> execute() throws BusinessException {
+				
+				return Persistence.getTaskDao().findTasksByCategoryId(id);
+			}
+		});
 	}
 
 	@Override
-	public List<Task> findFinishedTasksByCategoryId(Long catId)
-			throws BusinessException {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Task> findFinishedTasksByCategoryId(final Long id) throws BusinessException {
+		return new CommandExecutor<List<Task>>().execute( new Command<List<Task>>() {
+			@Override public List<Task> execute() throws BusinessException {
+				
+				return Persistence.getTaskDao().findFinishedTasksByCategoryId(id);
+			}
+		});
 	}
 
 	@Override
-	public List<Task> findFinishedInboxTasksByUserId(Long userId)
-			throws BusinessException {
+	public List<Task> findFinishedInboxTasksByUserId(final Long id) throws BusinessException {
+		return new CommandExecutor<List<Task>>().execute( new Command<List<Task>>() {
+			@Override public List<Task> execute() throws BusinessException {
+				
+				return Persistence.getTaskDao().findFinishedTasksInboxByUserId(id);
+			}
+		});
+	}
+
+	@Override
+	public List<Task> getAllTasksByUserId(Long id) throws BusinessException {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

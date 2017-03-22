@@ -5,35 +5,35 @@
 	xmlns:p="http://primefaces.org/ui">
 
 	<ui:define name="titulo">
-    #{msgs.tituloOperacionListado}
+    #{msgs.tituloOperacionListadoTareas}
   </ui:define>
 
 	<ui:define name="cuerpo">
 		<p:panel header="#{msgs.tituloOperacionListado}">
-			<p:dataTable id="tablatareas" var="tarea"
+			<p:dataTable id="tablaTareas" var="tarea"
 				value="#{tareas.}" border="1">
 				<p:column>
-					<f:facet name="header">#{msgs.tablaTitle}</f:facet>#{tarea.title}</p:column>
+					<f:facet name="header">#{msgs.tabla_tareas_title}</f:facet>#{tarea.title}</p:column>
 				<p:column>
-					<f:facet name="header">#{msgs.tablaComments}</f:facet>#{tarea.comments}</p:column>
+					<f:facet name="header">#{msgs.tabla_tareas_comments}</f:facet>#{tarea.comments}</p:column>
 				<p:column>
-					<f:facet name="header">#{msgs.tablaIdUser}</f:facet>#{tarea.iduser}</p:column>
+					<f:facet name="header">#{msgs.tabla_tareas_userid}</f:facet>#{tarea.iduser}</p:column>
 				<p:column>
-					<f:facet name="header">#{msgs.tablaCreated}</f:facet>#{tarea.created}</p:column>
+					<f:facet name="header">#{msgs.tabla_tareas_created}</f:facet>#{tarea.created}</p:column>
 				<p:column>
-					<f:facet name="header">#{msgs.tablaPlanned}</f:facet>#{tarea.planned}</p:column>
+					<f:facet name="header">#{msgs.tabla_tareas_planned}</f:facet>#{tarea.planned}</p:column>
 				<p:column>
-					<f:facet name="header">#{msgs.tablaFinished}</f:facet>#{tarea.finished}</p:column>
+					<f:facet name="header">#{msgs.tabla_tareas_finished}</f:facet>#{tarea.finished}</p:column>
 				<p:column>
 					<f:facet name="header">#{msgs.tablaBaja}</f:facet>
-					<p:commandLink action="#{controller.baja(tarea)}" type="submit"
+					<p:commandLink action="#{tareas.borrar(tarea)}" type="submit"
 						value="#{msgs.tablaBaja}" immediate="true" update="tablaTareas">
 					</p:commandLink>
 
 				</p:column>
 				<p:column>
 					<f:facet name="header">#{msgs.tablaEditar}</f:facet>
-					<p:commandLink action="editar" type="submit"
+					<p:commandLink action="#{tareas.editar}" type="submit"
 						value="#{msgs.tablaEditar}"
 						actionListener="#{tarea.setTask(tarea)}" immediate="true">
 					</p:commandLink>
