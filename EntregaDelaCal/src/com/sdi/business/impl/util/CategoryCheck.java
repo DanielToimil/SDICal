@@ -4,7 +4,7 @@ import com.sdi.business.exception.BusinessCheck;
 import com.sdi.business.exception.BusinessException;
 import com.sdi.model.Category;
 import com.sdi.model.User;
-import com.sdi.model.types.UserStatus;
+import com.sdi.model.type.UserStatus;
 import com.sdi.persistence.Persistence;
 
 public class CategoryCheck {

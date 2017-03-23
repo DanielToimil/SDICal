@@ -19,7 +19,6 @@ public class UserDaoJdbcImpl implements UserDao {
 				.setId(  		rs.getLong("id") )
 				.setLogin(  	rs.getString("login") )
 				.setPassword(  	rs.getString("password") )
-				.setEmail(  	rs.getString("email") )
 				.setIsAdmin( 	rs.getBoolean("isAdmin") )
 				.setStatus(  	UserStatus.valueOf( rs.getString("status") ));
 		}

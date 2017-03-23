@@ -1,6 +1,9 @@
 package com.sdi.presentation;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -29,6 +32,7 @@ public class BeanTareas implements Serializable {
 	private BeanTarea tarea;
 	
 	User user = (User) getObjectFromSession("LOGGEDIN_USER");
+	List<Task> aux = new ArrayList<Task>();
 	
 	public BeanTareas() {
 		listadoTasks();
@@ -105,7 +109,91 @@ public class BeanTareas implements Serializable {
 			
 			//-------------------------------------------------------------------
 			
-			tareas = (Task[]) service.findFinishedInboxTasksByUserId(user.getId()).toArray(new Task[0]);
+			tareas = listarTareas();
+			
+			//-------------------------------------------------------------------
+
+			return "exito"; // Nos vamos a la vista listado.xhtml
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "error"; // Nos vamos la vista de error
+		}
+
+	}
+	
+	public String listadoInbox() {
+		if (userIsNotLoggedIn()) {
+			return "casa";
+		}
+
+		TaskService service;
+		try {
+			// Acceso a la implementacion de la capa de negocio
+			// a trav��s de la factor��a
+			service = Factories.services.createTaskService();
+			// De esta forma le damos informaci��n a toArray para poder hacer el
+			// casting a Alumno[]
+			
+			//-------------------------------------------------------------------
+			
+			tareas = filterInbox(aux);
+			
+			//-------------------------------------------------------------------
+
+			return "exito"; // Nos vamos a la vista listado.xhtml
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "error"; // Nos vamos la vista de error
+		}
+
+	}
+	
+	public String listarToday() {
+		if (userIsNotLoggedIn()) {
+			return "casa";
+		}
+
+		TaskService service;
+		try {
+			// Acceso a la implementacion de la capa de negocio
+			// a trav��s de la factor��a
+			service = Factories.services.createTaskService();
+			// De esta forma le damos informaci��n a toArray para poder hacer el
+			// casting a Alumno[]
+			
+			//-------------------------------------------------------------------
+			
+			tareas = filterToday(aux);
+			
+			//-------------------------------------------------------------------
+
+			return "exito"; // Nos vamos a la vista listado.xhtml
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "error"; // Nos vamos la vista de error
+		}
+
+	}
+	
+	public String listarWeek() {
+		if (userIsNotLoggedIn()) {
+			return "casa";
+		}
+
+		TaskService service;
+		try {
+			// Acceso a la implementacion de la capa de negocio
+			// a trav��s de la factor��a
+			service = Factories.services.createTaskService();
+			// De esta forma le damos informaci��n a toArray para poder hacer el
+			// casting a Alumno[]
+			
+			//-------------------------------------------------------------------
+			
+			tareas = filterWeek(aux);
 			
 			//-------------------------------------------------------------------
 
@@ -132,7 +220,7 @@ public class BeanTareas implements Serializable {
 			// Actualizamos el javabean de alumnos inyectado en la tabla.
 			
 			//-------------------------------------------------------------------
-			tareas = (Task[]) service.findInboxTasksByUserId(user.getId()).toArray(new Task[0]);
+			tareas = listarTareas();
 			//-------------------------------------------------------------------
 			
 			return "exito"; // Nos vamos a la vista de listado.
@@ -185,7 +273,7 @@ public class BeanTareas implements Serializable {
 			}
 			// Actualizamos el javabean de alumnos inyectado en la tabla
 			//-------------------------------------------------------------------
-			// tareas = (Task[]) service.getAlumnos().toArray(new Task[0]);
+			tareas = listarTareas();
 			//-------------------------------------------------------------------
 			return "exito"; // Nos vamos a la vista de listado.
 
@@ -212,6 +300,62 @@ public class BeanTareas implements Serializable {
 	
 	private Task[] listarTareas(){
 		TaskService service = Factories.services.createTaskService();
-		return tareas = (Task[]) service.findInboxTasksByUserId(user.getId()).toArray(new Task[0]);
+		
+		// INBOX TASKS
+		List<Task> tasks = service.findInboxTasksByUserId(user.getId());
+		for(Task t : tasks){
+			this.aux.add(t);
+		}
+		
+		// TODAY TASKS
+		tasks = service.findTodayTasksByUserId(user.getId());
+		for(Task t : tasks){
+			this.aux.add(t);
+		}
+		
+		// WEEK TASKS
+		tasks = service.findWeekTasksByUserId(user.getId());
+		for(Task t : tasks){
+			this.aux.add(t);
+		}
+		
+		return aux.toArray(new Task[0]);
+	}
+	
+	private Task[] filterInbox(List<Task> tasks){
+		List<Task> copy = tasks;
+		List<Task> temp = new ArrayList<Task>();
+		Date today = new Date();
+		for(Task t : copy){
+			if(t.getPlanned().after(today)){
+				temp.add(t);
+			}
+		}	
+		return temp.toArray(new Task[0]);
+		
+	}
+	
+	private Task[] filterToday(List<Task> tasks){
+		List<Task> copy = tasks;
+		List<Task> temp = new ArrayList<Task>();
+		Date today = new Date();
+		for(Task t : copy){
+			if(t.getPlanned().equals(today)){
+				temp.add(t);
+			}
+		}	
+		return  temp.toArray(new Task[0]);
+	}
+	
+	private Task[] filterWeek(List<Task> tasks){
+		List<Task> copy = tasks;
+		List<Task> temp = new ArrayList<Task>();
+		Date today = new Date();
+		for(Task t : copy){
+			if(t.getPlanned().after(today)){
+				temp.add(t);
+			}
+		}	
+		return  temp.toArray(new Task[0]);
 	}
 }

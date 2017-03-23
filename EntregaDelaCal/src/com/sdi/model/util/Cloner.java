@@ -9,8 +9,7 @@ import com.sdi.model.User;
 public class Cloner {
 
 	public static User clone(User u) {
-		return new User()
-			.setId( 		u.getId() )
+		return new User().setId(u.getId())
 			.setEmail( 		u.getEmail() )
 			.setIsAdmin(	u.getIsAdmin() )
 			.setLogin( 		u.getLogin() )

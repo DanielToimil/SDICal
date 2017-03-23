@@ -29,7 +29,6 @@
 					<p:commandLink action="#{tareas.borrar(tarea)}" type="submit"
 						value="#{msgs.tablaBaja}" immediate="true" update="tablaTareas">
 					</p:commandLink>
-
 				</p:column>
 				<p:column>
 					<f:facet name="header">#{msgs.tablaEditar}</f:facet>
@@ -39,6 +38,18 @@
 					</p:commandLink>
 				</p:column>
 			</p:dataTable>
+			<p:commandLink action="#{tareas.listarInbox}" type="submit"
+						value="#{msgs.inbox}"
+						immediate="true">
+					</p:commandLink>
+			<p:commandLink action="#{tareas.listarToday}" type="submit"
+						value="#{msgs.hoy}"
+						immediate="true">
+			</p:commandLink>
+			<p:commandLink action="#{tareas.listarInbox}" type="submit"
+						value="#{msgs.semana}"
+						immediate="true">
+					</p:commandLink>
 		</p:panel>
 	</ui:define>
 	<ui:define name="pie">
